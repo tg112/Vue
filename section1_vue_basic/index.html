@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/vue@3"></script>
+</head>
+<body>
+
+<div id="app">
+  {{ message }}
+  <!-- v-bindの省略形は:<tag名> タグに属性をつける-->
+  <a v-bind:href="google">googleへのリンク</a><br />
+  <a :href="book.url">{{ book.title }}</a><br />
+  <input v-bind="formInput" /><br />
+  <!-- v-showはtoggle -->
+  <div v-show="isDisplay">Show</div>
+
+  <!-- v-if, v-else, v-else-if -->
+  <div v-if="signal === 'red'">red</div>
+  <div v-else-if="signal === 'blue'">blue</div>
+  <div v-else>yellow</div>
+  <!-- v-for -->
+  <ul>
+    <li v-for="(item, index) in items">{{ index }}: {{ item }}</li>
+  </ul>
+  <ul>
+    <li v-for="(value, key, index) in book">{{index}}: {{ key }}: {{ value }}</li>
+  </ul>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>title</th>
+        <th>url</th>
+      </tr>
+      <tbody>
+        <!-- indexをkeyに設定すると動きがおかしくなる可能性がある -->
+        <!-- v-forはv-ifより優先度が高い -->
+        <tr v-for="book in books" :key="book.id">
+          <td>{{ book.id }}</td>
+          <td>{{ book.title }}</td>
+          <td>{{ book.url }}</td>
+        </tr>
+      </tbody>
+    </thead>
+  </table>
+  <div v-text="test"></div>
+  <!-- v-htmlはinnerHtmlになる -->
+  <div v-html="test"></div>
+  <!-- v-cloakはコンパイルされていないMustacheバインディングを隠すことができる -->
+
+  <!-- v-onは @clickのような省略もできる-->
+  <button v-on:click="btnClicked">クリック</button>
+  <button @click="btnClicked">クリック</button>
+  <button @click="btnClickEvent">Event</button>
+  <button @click="btnClickArgs(1)">引数</button>
+  <!-- eventを渡す際は、$eventで渡す -->
+  <button @click="btnClickEventArgs(1, $event)">引数とイベント</button>
+
+  <!-- ajax -->
+  <form>
+    <button type="submit">送信</button>
+  </form>
+
+  <!-- computedはデータの中身が変わらないと実行されない -->
+  <!-- totalPriceは1回、totalPriceMethodsは2回呼ばれる -->
+  <p>totalPrice: {{ totalPrice }}</p>
+  <p>totalPrice: {{ totalPrice }}</p>
+  <p>totalPriceMethods: {{ totalPriceMethods() }}</p>
+  <p>totalPriceMethods: {{ totalPriceMethods() }}</p>
+</div>
+<script>
+  Vue.createApp({
+    data() {
+      return {
+        message: 'Hello Vue!',
+        google: 'https://google.com',
+        test: "あああ<br /> いいい",
+        book: {
+          title: '本のタイトル',
+          url: 'https://google.com'
+        },
+        books: [
+          {
+            id: 1,
+            title: '本のタイトル',
+            url: 'https://google.com'
+          },
+          {
+            id: 2,
+            title: '本のタイトル2',
+            url: 'https://google.com'
+          },
+          {
+            id: 3,
+            title: '本のタイトル3',
+            url: 'https://google.com'
+          },
+        ],
+        price: 100,
+        number: 1,
+        formInput: {
+          name: 'your name',
+          placeholder: 'enter your name',
+          type: 'text'
+        },
+        isDisplay: true,
+        signal: 'blue',
+        items: ['apple', 'orange', 'banana'],
+        ractiveTest: {
+          name: 'test'
+        }
+      }
+    },
+    methods: {
+      btnClicked() {
+        console.log('Vue Clicked')
+      },
+      btnClickEvent(e) {
+        console.log(e);
+      },
+      btnClickEventArgs(arg, e) {
+        console.log(arg, e);
+      },
+      btnClickArgs(arg) {
+        console.log(arg);
+      },
+      totalPriceMethods() {
+        console.log('methods');
+        return this.number * this.price;
+      }
+    },
+    computed: {
+      // totalPrice() {
+      //   console.log('computed');
+      //   return this.number * this.price;
+      // }
+      // thisを指定すると、windowオブジェクトを参照してしまうため、vueインスタンスを参照するようにする
+      totalPrice: app => app.number * app.price
+    },
+    watch: {
+      books: {
+        handler() {
+          console.log('変更されました')
+        },
+        deep: true
+      }
+    },
+    created() {
+      console.log('created');
+      console.log(this.$el);
+    },
+    mounted() {
+      console.log('mounted');
+      console.log(this.$el);
+    }
+  }).mount('#app') // 仮想DOM
+</script>
+</body>
+</html>
