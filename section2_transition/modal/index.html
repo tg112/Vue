@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<div id="app">
+  <button @click="isShow = !isShow">Vue表示/表示</button>
+  <transition name="fade">
+    <div v-show="isShow">
+      <div class="modal__inner">
+        <div class="close__modal" @click="isShow = !isShow">X</div>
+        <img src="image001.jpg" alt="">
+      </div>
+      <div class="modal__background" @click="isShow = !isShow"></div>background
+    </div>
+  </transition>
+</div>
+<script>
+  Vue.createApp({
+    data() {
+      return {
+        isShow: false
+      }
+    },
+  }).mount('#app') // 仮想DOM
+</script>
+</body>
+</html>
